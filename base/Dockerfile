@@ -3,10 +3,20 @@ MAINTAINER Ivan Ermilov <ivan.s.ermilov@gmail.com>
 
 RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends openjdk-8-jdk
+RUN apt-get update && apt-get upgrade -y --no-install-recommends && \
+	DEBIAN_FRONTEND=noninteractive apt-get install -y -t jessie-backports --no-install-recommends openjdk-8-jdk
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 
+RUN apt-get install -y --no-install-recommends python3 python3-pip \
+  && cd /usr/local/bin \
+  && ln -s /usr/bin/python3 python \
+  && pip3 install --upgrade pip && \
+  apt-get clean
+
+
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends net-tools curl
+
+RUN apt-get clean
 
 RUN gpg --keyserver pool.sks-keyservers.net --recv-keys \
     07617D4968B34D8F13D56E20BE5AAA0BA210C095 \
@@ -44,7 +54,7 @@ RUN gpg --keyserver pool.sks-keyservers.net --recv-keys \
 
 RUN gpg --keyserver pool.sks-keyservers.net --recv-key C36C5F0F
 
-ENV HADOOP_VERSION 2.7.1
+ENV HADOOP_VERSION 2.7.6
 ENV HADOOP_URL https://www.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
 RUN set -x \
     && curl -fSL "$HADOOP_URL" -o /tmp/hadoop.tar.gz \
