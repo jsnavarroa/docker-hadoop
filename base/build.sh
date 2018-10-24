@@ -7,7 +7,7 @@ err_report() {
 trap 'err_report $LINENO' ERR
 
 # declare enviroment variables
-IMAGE_TAG="bde2020/hadoop-base:1.1.0-hadoop2.7.6-py3-java8"
+IMAGE_TAG="bde2020/hadoop-base:2.0.0-hadoop2.7.6-py3-java8"
 
 # Build image, with local Dockerfile
 docker build -t $IMAGE_TAG .

@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-FROM bde2020/hadoop-base:1.1.0-hadoop2.7.6-py3-java8
-=======
-FROM bde2020/hadoop-base:2.0.0-hadoop2.7.4-java8
->>>>>>> refs/remotes/origin/2.0.0-hadoop2.7.4-java8
+FROM bde2020/hadoop-base:2.0.0-hadoop2.7.6-py3-java8
+
 MAINTAINER Ivan Ermilov <ivan.s.ermilov@gmail.com>
 
 HEALTHCHECK CMD curl -f http://localhost:50075/ || exit 1
