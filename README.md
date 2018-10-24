@@ -2,7 +2,7 @@
 
 # Changes
 
-Version 1.1.0 introduces healthchecks for the containers.
+Version 2.0.0 introduces uses wait_for_it script for the cluster startup
 
 # Hadoop Docker
 
@@ -15,6 +15,11 @@ Version 1.1.0 introduces healthchecks for the containers.
 To deploy an example HDFS cluster, run:
 ```
   docker-compose up
+```
+
+Or deploy in swarm:
+```
+docker stack deploy -c docker-compose-v3.yml hadoop
 ```
 
 `docker-compose` creates a docker network that can be found by running `docker network list`, e.g. `dockerhadoop_default`.
@@ -49,5 +54,6 @@ The available configurations are:
 * /etc/hadoop/yarn-site.xml YARN_CONF
 * /etc/hadoop/httpfs-site.xml HTTPFS_CONF
 * /etc/hadoop/kms-site.xml KMS_CONF
+* /etc/hadoop/mapred-site.xml  MAPRED_CONF
 
 If you need to extend some other configuration file, refer to base/entrypoint.sh bash script.
