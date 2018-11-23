@@ -1,104 +1,86 @@
-version: "2"
+version: "3"
 
 services:
-  
   base:
     build: ./base
-    image: bde2020/hadoop-base:2.0.0-hadoop2.7.6-py3-java8
-  
+    image: bde2020/hadoop-base:2.0.0-hadoop3.1.1-java8-py3
+
   namenode:
     build: ./namenode
-    hostname: namenode
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.1.1-java8-py3
     container_name: namenode
     volumes:
       - hadoop_namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=test
-    env_file:
-      - ./hadoop.env
-
-  resourcemanager:
-    build: ./resourcemanager
-    hostname: resourcemanager
-    container_name: resourcemanager
-    depends_on:
-      - "namenode"
-    links:
-      - "namenode"
     ports:
-      - "58088:8088"
-    env_file:
-      - ./hadoop.env
-
-  historyserver:
-    build: ./historyserver
-    hostname: historyserver
-    container_name: historyserver
-    volumes:
-      - hadoop_historyserver:/hadoop/yarn/timeline
-    depends_on:
-      - "namenode"
-    links:
-      - "namenode"
-    ports:
-      - "58188:8188"
-    env_file:
-      - ./hadoop.env
-
-  nodemanager1:
-    build: ./nodemanager
-    hostname: nodemanager1
-    container_name: nodemanager1
-    depends_on:
-      - "namenode"
-      - "resourcemanager"
-    links:
-      - "namenode"
-      - "resourcemanager"
-    ports:
-      - "58042:8042"
+      - "9800:9000"
+      - "9870:9870"
     env_file:
       - ./hadoop.env
 
   datanode1:
     build: ./datanode
-    hostname: datanode1
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.1.1-java8-py3
     container_name: datanode1
-    depends_on:
-      - "namenode"
-    links:
-      - "namenode"
     volumes:
       - hadoop_datanode1:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
 
   datanode2:
     build: ./datanode
-    hostname: datanode2
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.1.1-java8-py3
     container_name: datanode2
-    depends_on:
-      - "namenode"
-    links:
-      - "namenode"
     volumes:
       - hadoop_datanode2:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
 
   datanode3:
     build: ./datanode
-    hostname: datanode3
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.1.1-java8-py3
     container_name: datanode3
-    depends_on:
-      - "namenode"
-    links:
-      - "namenode"
     volumes:
       - hadoop_datanode3:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
-      
+
+  resourcemanager:
+    build: ./resourcemanager
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.1.1-java8-py3
+    container_name: resourcemanager
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 datanode2:9864 datanode3:9864"
+    env_file:
+      - ./hadoop.env
+
+  nodemanager1:
+    build: ./nodemanager
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.1.1-java8-py3
+    container_name: nodemanager
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 datanode2:9864 datanode3:9864 resourcemanager:8088"
+    env_file:
+      - ./hadoop.env
+
+  historyserver:
+    build: ./historyserver
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.1.1-java8-py3
+    container_name: historyserver
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 datanode2:9864 datanode3:9864 resourcemanager:8088"
+    volumes:
+      - hadoop_historyserver:/hadoop/yarn/timeline
+    env_file:
+      - ./hadoop.env
+
 volumes:
   hadoop_namenode:
   hadoop_datanode1:
