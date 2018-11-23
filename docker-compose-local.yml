@@ -1,13 +1,17 @@
 version: "2"
 
 services:
+  
+  base:
+    build: ./base
+    image: bde2020/hadoop-base:2.0.0-hadoop2.7.6-py3-java8
+  
   namenode:
     build: ./namenode
     hostname: namenode
     container_name: namenode
     volumes:
-      - ./data/namenode:/hadoop/dfs/name
-      - /home/juan/workspace/BDA/ADB/Hadoop:/Example
+      - hadoop_namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=test
     env_file:
@@ -31,7 +35,7 @@ services:
     hostname: historyserver
     container_name: historyserver
     volumes:
-      - ./data/historyserver:/hadoop/yarn/timeline
+      - hadoop_historyserver:/hadoop/yarn/timeline
     depends_on:
       - "namenode"
     links:
@@ -65,7 +69,7 @@ services:
     links:
       - "namenode"
     volumes:
-      - ./data/datanode1:/hadoop/dfs/data
+      - hadoop_datanode1:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
 
@@ -78,7 +82,7 @@ services:
     links:
       - "namenode"
     volumes:
-      - ./data/datanode2:/hadoop/dfs/data
+      - hadoop_datanode2:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
 
@@ -91,6 +95,13 @@ services:
     links:
       - "namenode"
     volumes:
-      - ./data/datanode3:/hadoop/dfs/data
+      - hadoop_datanode3:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
+      
+volumes:
+  hadoop_namenode:
+  hadoop_datanode1:
+  hadoop_datanode2:
+  hadoop_datanode3:
+  hadoop_historyserver:
