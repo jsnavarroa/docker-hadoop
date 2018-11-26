@@ -29,6 +29,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
+    depends_on:
+      - namenode
 
   datanode2:
     build: ./datanode
@@ -40,6 +42,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
+    depends_on:
+      - namenode
 
   datanode3:
     build: ./datanode
@@ -51,6 +55,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
+    depends_on:
+      - namenode
 
   resourcemanager:
     build: ./resourcemanager
@@ -60,6 +66,11 @@ services:
       SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 datanode2:9864 datanode3:9864"
     env_file:
       - ./hadoop.env
+    depends_on:
+      - namenode
+      - datanode1
+      - datanode2
+      - datanode3
 
   nodemanager1:
     build: ./nodemanager
@@ -69,6 +80,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 datanode2:9864 datanode3:9864 resourcemanager:8088"
     env_file:
       - ./hadoop.env
+    depends_on:
+      - namenode
 
   historyserver:
     build: ./historyserver
@@ -80,6 +93,8 @@ services:
       - hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
       - ./hadoop.env
+    depends_on:
+      - namenode
 
 volumes:
   hadoop_namenode:
