@@ -82,6 +82,10 @@ services:
       - ./hadoop.env
     depends_on:
       - namenode
+      - datanode1
+      - datanode2
+      - datanode3
+      - resourcemanager
 
   historyserver:
     build: ./historyserver
@@ -95,6 +99,10 @@ services:
       - ./hadoop.env
     depends_on:
       - namenode
+      - datanode1
+      - datanode2
+      - datanode3
+      - resourcemanager
 
 volumes:
   hadoop_namenode:
